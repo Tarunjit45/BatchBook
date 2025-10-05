@@ -1,0 +1,197 @@
+@import url('https://fonts.googleapis.com/css2?family=Nunito+Sans:ital,wght@0,200;0,300;0,400;0,600;0,700;0,800;0,900;1,200;1,300;1,400;1,600;1,700;1,800;1,900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Kalam:wght@300;400;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    font-family: 'Nunito Sans', system-ui, sans-serif;
+    scroll-behavior: smooth;
+  }
+  
+  body {
+    background: linear-gradient(135deg, 
+      #fdf2f8 0%, 
+      #f0f9ff 25%, 
+      #fefce8 50%, 
+      #faf7ff 75%, 
+      #f0fdfa 100%);
+    min-height: 100vh;
+    font-feature-settings: 'rlig' 1, 'calt' 1;
+  }
+
+  * {
+    @apply border-border;
+  }
+
+  /* Custom scrollbar */
+  ::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  ::-webkit-scrollbar-track {
+    @apply bg-primary-50;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    @apply bg-primary-300 rounded-full;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-primary-400;
+  }
+
+  /* Selection colors */
+  ::selection {
+    @apply bg-primary-200 text-primary-900;
+  }
+
+  /* Focus styles */
+  *:focus {
+    @apply outline-none;
+  }
+
+  *:focus-visible {
+    @apply ring-2 ring-primary-500 ring-offset-2 ring-offset-white;
+  }
+}
+
+@layer components {
+  /* Button Components */
+  .btn-primary {
+    @apply bg-gradient-to-r from-primary-500 to-primary-600 hover:from-primary-600 hover:to-primary-700 text-white font-semibold py-3 px-6 rounded-full transition-all duration-300 shadow-soft hover:shadow-nostalgic transform hover:-translate-y-0.5 active:scale-95;
+  }
+  
+  .btn-secondary {
+    @apply bg-gradient-to-r from-secondary-100 to-secondary-200 hover:from-secondary-200 hover:to-secondary-300 text-secondary-800 font-semibold py-3 px-6 rounded-full transition-all duration-300 shadow-soft hover:shadow-lg transform hover:-translate-y-0.5 active:scale-95;
+  }
+
+  .btn-accent {
+    @apply bg-gradient-to-r from-accent-400 to-accent-500 hover:from-accent-500 hover:to-accent-600 text-white font-semibold py-3 px-6 rounded-full transition-all duration-300 shadow-soft hover:shadow-lg transform hover:-translate-y-0.5 active:scale-95;
+  }
+
+  .btn-ghost {
+    @apply bg-white/50 hover:bg-white/80 text-primary-700 font-medium py-3 px-6 rounded-full transition-all duration-300 backdrop-blur-sm border border-primary-200 hover:border-primary-300;
+  }
+  
+  /* Card Components */
+  .card {
+    @apply bg-white/80 backdrop-blur-sm rounded-3xl shadow-soft border border-white/40 p-6 hover:shadow-nostalgic transition-all duration-300 transform hover:-translate-y-1;
+  }
+
+  .card-nostalgic {
+    @apply bg-gradient-to-br from-white/90 via-primary-50/30 to-secondary-50/30 backdrop-blur-sm rounded-3xl shadow-nostalgic border border-primary-100/50 p-6 hover:shadow-xl transition-all duration-500 transform hover:-translate-y-2 hover:scale-[1.02];
+  }
+  
+  /* Input Components */
+  .search-input {
+    @apply w-full px-4 py-3 rounded-xl border-2 border-primary-200 focus:border-primary-400 focus:ring-4 focus:ring-primary-100 focus:outline-none transition-all duration-200 bg-white/80 backdrop-blur-sm placeholder-primary-300;
+  }
+
+  .input-nostalgic {
+    @apply w-full px-4 py-3 rounded-2xl border-2 border-primary-200 focus:border-primary-500 focus:ring-4 focus:ring-primary-100 focus:outline-none transition-all duration-300 bg-white/90 backdrop-blur-sm placeholder-primary-400 shadow-soft;
+  }
+  
+  /* Yearbook Card */
+  .yearbook-card {
+    @apply bg-gradient-to-br from-white/95 via-primary-50/40 to-secondary-50/40 rounded-3xl shadow-soft border border-primary-100/60 overflow-hidden hover:shadow-nostalgic transition-all duration-500 transform hover:-translate-y-2 hover:scale-[1.03] group;
+  }
+
+  /* Text Components */
+  .text-nostalgic {
+    @apply text-primary-800 font-nostalgic;
+  }
+
+  .text-display {
+    @apply font-display font-bold;
+  }
+
+  .text-handwriting {
+    @apply font-handwriting;
+  }
+
+  /* Gradient Text */
+  .gradient-text {
+    @apply bg-gradient-to-r from-primary-600 via-secondary-600 to-accent-600 bg-clip-text text-transparent;
+  }
+
+  .gradient-text-warm {
+    @apply bg-gradient-to-r from-primary-600 to-warm-600 bg-clip-text text-transparent;
+  }
+
+  /* Glass Effect */
+  .glass {
+    @apply bg-white/20 backdrop-blur-md border border-white/30;
+  }
+
+  .glass-strong {
+    @apply bg-white/40 backdrop-blur-lg border border-white/50;
+  }
+
+  /* Animation Classes */
+  .animate-fade-in {
+    animation: fadeIn 0.6s ease-out forwards;
+  }
+
+  .animate-slide-up {
+    animation: slideUp 0.6s ease-out forwards;
+  }
+
+  .animate-float {
+    animation: float 3s ease-in-out infinite;
+  }
+
+  /* Hover Effects */
+  .hover-lift {
+    @apply transition-all duration-300 hover:-translate-y-1 hover:shadow-lg;
+  }
+
+  .hover-glow {
+    @apply transition-all duration-300 hover:shadow-glow;
+  }
+
+  /* Responsive Typography */
+  .heading-1 {
+    @apply text-4xl md:text-5xl lg:text-6xl font-display font-bold text-primary-800 leading-tight;
+  }
+
+  .heading-2 {
+    @apply text-3xl md:text-4xl lg:text-5xl font-display font-bold text-primary-800 leading-tight;
+  }
+
+  .heading-3 {
+    @apply text-2xl md:text-3xl font-display font-semibold text-primary-700 leading-snug;
+  }
+
+  .body-large {
+    @apply text-lg md:text-xl text-gray-600 leading-relaxed;
+  }
+
+  .body-text {
+    @apply text-base text-gray-600 leading-relaxed;
+  }
+
+  /* Utility Classes */
+  .container-nostalgic {
+    @apply container mx-auto px-4 sm:px-6 lg:px-8;
+  }
+
+  .section-padding {
+    @apply py-16 md:py-20 lg:py-24;
+  }
+
+  .border-nostalgic {
+    @apply border-2 border-primary-200;
+  }
+
+  .rounded-nostalgic {
+    @apply rounded-2xl;
+  }
+
+  .shadow-nostalgic {
+    box-shadow: 0 4px 20px -2px rgba(236, 72, 153, 0.1), 0 2px 10px -1px rgba(236, 72, 153, 0.05);
+  }
+}
