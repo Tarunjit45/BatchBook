@@ -7,7 +7,7 @@ import PhotoCard from '../components/PhotoCard'
 
 // Mock data for school yearbooks
 const mockYearbooks = [
-  {
+  {  
     schoolName: 'Lincoln High School',
     year: '2020',
     imageUrl: 'https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=400&h=300&fit=crop',
