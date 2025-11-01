@@ -33,7 +33,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     return res.status(500).json({
       success: false,
       message: 'Failed to connect to database',
-      error: error.message,
+      error: error instanceof Error ? error.message : 'Unknown error',
       env: {
         mongodbUri: process.env.MONGODB_URI ? 'Set' : 'Not set',
         mongodbDb: process.env.MONGODB_DB || 'Not set',

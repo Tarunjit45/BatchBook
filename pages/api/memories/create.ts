@@ -1,9 +1,9 @@
 // pages/api/memories/create.ts
-import { NextApiResponse } from 'next';
+import { NextApiRequest, NextApiResponse } from 'next';
 import { getServerSession } from 'next-auth/next';
 import { connectToDatabase } from '../../../lib/db';
 import { uploadFile } from '../../../lib/storage';
-import createHandler from '../../../middleware/multer';
+import { createHandler } from '../../../middleware/multer';
 import { authOptions } from '../auth/[...nextauth]';
 
 interface CreateMemoryRequest extends NextApiRequest {
@@ -57,14 +57,15 @@ handler.post(async (req: CreateMemoryRequest, res: NextApiResponse) => {
     let imageUrl: string;
     try {
       console.log('Uploading file to storage...');
-      imageUrl = await uploadFile(file);
+      const uploadResult = await uploadFile(file);
+      imageUrl = uploadResult.url;
       console.log('File uploaded successfully. URL:', imageUrl);
     } catch (uploadError) {
       console.error('File upload failed:', uploadError);
       return res.status(500).json({
         success: false,
         message: 'Failed to upload image',
-        error: uploadError.message
+        error: uploadError instanceof Error ? uploadError.message : 'Unknown error'
       });
     }
 
@@ -135,7 +136,7 @@ handler.post(async (req: CreateMemoryRequest, res: NextApiResponse) => {
       return res.status(500).json({
         success: false,
         message: 'Failed to save memory',
-        error: dbError.message
+        error: dbError instanceof Error ? dbError.message : 'Unknown error'
       });
     }
   } catch (error) {

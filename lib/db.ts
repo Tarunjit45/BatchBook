@@ -8,6 +8,15 @@ if (!process.env.MONGODB_DB) {
   console.warn('⚠️  MONGODB_DB is not defined in environment variables');
 }
 
+// Collection names
+export const collections = {
+  users: 'users',
+  memories: 'memories',
+  photos: 'photos',
+  comments: 'comments',
+  institutions: 'institutions'
+};
+
 // Global variables to cache the client and DB connection
 let client: MongoClient;
 let db: Db;
