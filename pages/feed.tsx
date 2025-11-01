@@ -1,6 +1,7 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import { useRouter } from 'next/router';
 import { useEffect, useState, useRef } from 'react';
+import { useSession } from 'next-auth/react';
 import { 
   FiArrowLeft, 
   FiClock, 
@@ -12,7 +13,9 @@ import {
   FiShare2, 
   FiX,
   FiSend,
-  FiMoreHorizontal
+  FiMoreHorizontal,
+  FiEdit2,
+  FiTrash2
 } from 'react-icons/fi';
 import { FaHeart } from 'react-icons/fa';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
@@ -31,6 +34,7 @@ interface Memory {
   imageUrl: string;
   schoolName: string;
   uploaderName: string;
+  uploaderEmail?: string;
   uploadDate: string;
   year: number;
   title: string;
@@ -42,14 +46,18 @@ interface Memory {
   showCommentInput: boolean;
   newComment: string;
   showShareOptions: boolean;
+  showEditMenu: boolean;
+  isEditing: boolean;
 }
 
 export default function Feed() {
   const router = useRouter();
+  const { data: session } = useSession();
   const [memories, setMemories] = useState<Memory[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [copied, setCopied] = useState(false);
+  const [editFormData, setEditFormData] = useState<{title: string; description: string}>({title: '', description: ''});
   const commentInputRefs = useRef<{[key: string]: HTMLInputElement | null}>({});
   const shareMenuRef = useRef<HTMLDivElement>(null);
   
@@ -86,6 +94,7 @@ export default function Feed() {
             imageUrl: photo.imageUrl,
             schoolName: photo.schoolName,
             uploaderName: photo.uploaderName,
+            uploaderEmail: photo.uploaderEmail,
             uploadDate: photo.uploadDate,
             year: photo.year,
             title: photo.title,
@@ -96,7 +105,9 @@ export default function Feed() {
             showComments: false,
             showCommentInput: false,
             newComment: '',
-            showShareOptions: false
+            showShareOptions: false,
+            showEditMenu: false,
+            isEditing: false
           }));
           
           setMemories(transformedMemories);
@@ -109,6 +120,7 @@ export default function Feed() {
               imageUrl: '/images/placeholder-image.jpg',
               schoolName: 'Example High School',
               uploaderName: 'John Doe',
+              uploaderEmail: session?.user?.email || 'test@example.com', // Use current user's email for testing
               uploadDate: '2023-05-15',
               year: 2020,
               title: 'Graduation Day',
@@ -132,13 +144,16 @@ export default function Feed() {
               showComments: false,
               showCommentInput: false,
               newComment: '',
-              showShareOptions: false
+              showShareOptions: false,
+              showEditMenu: false,
+              isEditing: false
             },
             {
               id: '2',
               imageUrl: '/images/placeholder-image.jpg',
               schoolName: 'Central College',
               uploaderName: 'Sarah Williams',
+              uploaderEmail: 'sarah@example.com', // Different user
               uploadDate: '2023-06-10',
               year: 2021,
               title: 'Annual Sports Day',
@@ -149,7 +164,9 @@ export default function Feed() {
               showComments: false,
               showCommentInput: false,
               newComment: '',
-              showShareOptions: false
+              showShareOptions: false,
+              showEditMenu: false,
+              isEditing: false
             }
           ];
           
@@ -280,6 +297,107 @@ export default function Feed() {
     setTimeout(() => setCopied(false), 2000);
   };
 
+  const toggleEditMenu = (memoryId: string) => {
+    setMemories(memories =>
+      memories.map(memory =>
+        memory.id === memoryId
+          ? { ...memory, showEditMenu: !memory.showEditMenu }
+          : { ...memory, showEditMenu: false }
+      )
+    );
+  };
+
+  const startEdit = (memoryId: string) => {
+    const memory = memories.find(m => m.id === memoryId);
+    if (!memory) return;
+
+    setEditFormData({
+      title: memory.title,
+      description: memory.description
+    });
+
+    setMemories(memories =>
+      memories.map(m =>
+        m.id === memoryId
+          ? { ...m, isEditing: true, showEditMenu: false }
+          : m
+      )
+    );
+  };
+
+  const cancelEdit = (memoryId: string) => {
+    setMemories(memories =>
+      memories.map(m =>
+        m.id === memoryId
+          ? { ...m, isEditing: false }
+          : m
+      )
+    );
+  };
+
+  const saveEdit = async (memoryId: string) => {
+    try {
+      const response = await fetch(`/api/photos/${memoryId}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(editFormData)
+      });
+
+      if (response.ok) {
+        setMemories(memories =>
+          memories.map(m =>
+            m.id === memoryId
+              ? {
+                  ...m,
+                  title: editFormData.title,
+                  description: editFormData.description,
+                  isEditing: false
+                }
+              : m
+          )
+        );
+        alert('Memory updated successfully!');
+      } else {
+        alert('Failed to update memory');
+      }
+    } catch (error) {
+      console.error('Error updating memory:', error);
+      alert('Failed to update memory');
+    }
+  };
+
+  const deleteMemory = async (memoryId: string) => {
+    if (!confirm('Are you sure you want to delete this memory? This action cannot be undone.')) {
+      return;
+    }
+
+    try {
+      const response = await fetch(`/api/photos/${memoryId}`, {
+        method: 'DELETE'
+      });
+
+      if (response.ok) {
+        setMemories(memories => memories.filter(m => m.id !== memoryId));
+        alert('Memory deleted successfully!');
+      } else {
+        alert('Failed to delete memory');
+      }
+    } catch (error) {
+      console.error('Error deleting memory:', error);
+      alert('Failed to delete memory');
+    }
+  };
+
+  const canEditMemory = (memory: Memory) => {
+    const canEdit = session?.user?.email === memory.uploaderEmail;
+    console.log('Can edit check:', {
+      sessionEmail: session?.user?.email,
+      uploaderEmail: memory.uploaderEmail,
+      canEdit
+    });
+    return canEdit;
+  };
+
   const shareOnSocialMedia = (platform: string) => {
     // Implement sharing logic for different platforms
     const url = window.location.href;
@@ -371,7 +489,7 @@ export default function Feed() {
                         <FiMoreHorizontal />
                       </button>
                       
-                      {/* Share Dropdown */}
+                      {/* Share/Edit Dropdown */}
                       <AnimatePresence>
                         {memory.showShareOptions && (
                           <motion.div
@@ -383,11 +501,34 @@ export default function Feed() {
                             ref={shareMenuRef}
                           >
                             <div className="p-2">
+                              {/* Edit and Delete options - only for owner */}
+                              {canEditMemory(memory) && (
+                                <>
+                                  <button 
+                                    onClick={() => startEdit(memory.id)}
+                                    className="w-full flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-md transition-colors"
+                                  >
+                                    <FiEdit2 className="mr-2" />
+                                    Edit Memory
+                                  </button>
+                                  <button 
+                                    onClick={() => deleteMemory(memory.id)}
+                                    className="w-full flex items-center px-4 py-2 text-sm text-red-600 hover:bg-red-50 rounded-md transition-colors"
+                                  >
+                                    <FiTrash2 className="mr-2" />
+                                    Delete Memory
+                                  </button>
+                                  <div className="border-t border-gray-200 my-2"></div>
+                                </>
+                              )}
+                              
+                              {/* Share options */}
                               <CopyToClipboard 
                                 text={window.location.href} 
                                 onCopy={handleCopyLink}
                               >
                                 <button className="w-full flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-md transition-colors">
+                                  <FiShare2 className="mr-2" />
                                   {copied ? 'Link Copied!' : 'Copy Link'}
                                 </button>
                               </CopyToClipboard>
@@ -440,8 +581,49 @@ export default function Feed() {
                         <FiMapPin className="mr-1 flex-shrink-0" />
                         <span className="truncate">{memory.schoolName} • {memory.year} Batch</span>
                       </div>
-                      <h2 className="text-xl font-semibold text-gray-900 mb-2">{memory.title}</h2>
-                      <p className="text-gray-600 mb-4">{memory.description}</p>
+                      
+                      {/* Edit Mode */}
+                      {memory.isEditing ? (
+                        <div className="space-y-4">
+                          <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-1">Title</label>
+                            <input
+                              type="text"
+                              value={editFormData.title}
+                              onChange={(e) => setEditFormData({ ...editFormData, title: e.target.value })}
+                              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-primary-500 focus:border-primary-500"
+                            />
+                          </div>
+                          <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
+                            <textarea
+                              value={editFormData.description}
+                              onChange={(e) => setEditFormData({ ...editFormData, description: e.target.value })}
+                              rows={3}
+                              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-primary-500 focus:border-primary-500"
+                            />
+                          </div>
+                          <div className="flex space-x-2">
+                            <button
+                              onClick={() => saveEdit(memory.id)}
+                              className="px-4 py-2 bg-primary-600 text-white rounded-md hover:bg-primary-700 transition-colors"
+                            >
+                              Save Changes
+                            </button>
+                            <button
+                              onClick={() => cancelEdit(memory.id)}
+                              className="px-4 py-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300 transition-colors"
+                            >
+                              Cancel
+                            </button>
+                          </div>
+                        </div>
+                      ) : (
+                        <>
+                          <h2 className="text-xl font-semibold text-gray-900 mb-2">{memory.title}</h2>
+                          <p className="text-gray-600 mb-4">{memory.description}</p>
+                        </>
+                      )}
                       
                       {/* Like and Comment Stats */}
                       <div className="flex items-center text-sm text-gray-500 mb-4">

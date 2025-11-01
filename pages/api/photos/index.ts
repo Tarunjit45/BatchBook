@@ -37,6 +37,7 @@ export default async function handler(
       imageUrl: photo.url,
       schoolName: photo.metadata.schoolName,
       uploaderName: photo.metadata.fullName,
+      uploaderEmail: photo.uploadedBy, // Add uploader email for edit/delete permissions
       uploadDate: photo.uploadDate,
       year: photo.metadata.graduationYear,
       title: photo.metadata.title,
