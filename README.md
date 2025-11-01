@@ -1,213 +1,200 @@
-# BatchBook
+# BatchBook 📚
 
-> Your school memories, preserved forever. 📚✨
+Your school memories, preserved forever.
 
-A modern web application built with Next.js and TailwindCSS for discovering, organizing, and sharing school memories.
+BatchBook is a modern web application that helps you discover, share, and preserve precious school memories from yearbooks, photos, and more. Search by school and year to find and relive your cherished moments.
 
-## ⚠️ Current Status
+## ✨ Features
 
-✅ **Working**: Development server running, UI fully functional  
-⚠️ **Issue**: MongoDB connection has SSL/TLS compatibility issue  
-🔧 **Solution**: See `ISSUES_AND_FIXES.md` for detailed fixes
+- **Smart Search** - Search memories by school name and graduation year
+- **Photo Upload** - Upload and share your school memories with detailed metadata
+- **Memory Feed** - Browse through all shared memories in a beautiful, interactive feed
+- **Social Interactions** - Like, comment, and share memories with others
+- **Responsive Design** - Beautiful UI that works on all devices
+- **Cloud Storage** - Secure file storage using Google Cloud Storage
+- **Authentication** - Google OAuth integration with NextAuth
 
-## 🚀 Quick Start
-
-```bash
-# Install dependencies (already done)
-npm install
-
-# Run development server (currently running)
-npm run dev
-```
-
-Open [http://localhost:3000](http://localhost:3000) in your browser.
-
-## Features
-
-- 🔍 **Smart Search**: Intelligent search functionality with filtering and sorting
-- 🎨 **Modern UI**: Beautiful, responsive design with TailwindCSS
-- 📱 **Mobile First**: Optimized for all device sizes
-- ⚡ **Fast Performance**: Built with Next.js for optimal performance
-- 🎯 **Type Safety**: Full TypeScript support
-- 🔧 **Scalable Architecture**: Well-organized component structure
-
-## Tech Stack
+## 🚀 Tech Stack
 
 - **Framework**: Next.js 14
-- **Styling**: TailwindCSS
 - **Language**: TypeScript
-- **Icons**: Heroicons (SVG)
-- **Images**: Next.js Image Optimization
-- **Deployment**: Vercel
+- **Styling**: TailwindCSS with custom animations
+- **Database**: MongoDB with Mongoose ORM
+- **Authentication**: NextAuth.js with Google OAuth
+- **File Upload**: Multer middleware
+- **Cloud Storage**: Google Cloud Storage
+- **UI/UX**: Framer Motion, React Icons, Heroicons
 
-## Project Structure
+## 📋 Prerequisites
+
+- Node.js 18 or higher
+- MongoDB Atlas account
+- Google Cloud Platform account (for OAuth and Storage)
+- npm or yarn package manager
+
+## 🛠️ Installation
+
+1. Clone the repository:
+```bash
+git clone https://github.com/Tarunjit45/BatchBook.git
+cd BatchBook
+```
+
+2. Install dependencies:
+```bash
+npm install
+```
+
+3. Create a `.env.local` file in the root directory:
+```env
+MONGODB_URI=your_mongodb_connection_string
+MONGODB_DB=BatchBook
+GOOGLE_CLIENT_ID=your_google_client_id
+GOOGLE_CLIENT_SECRET=your_google_client_secret
+NEXTAUTH_SECRET=your_nextauth_secret
+NEXTAUTH_URL=http://localhost:3000
+GCS_BUCKET_NAME=your_gcs_bucket_name
+GOOGLE_CLOUD_PROJECT_ID=your_project_id
+```
+
+4. Set up Google Cloud Storage:
+   - Create a service account and download the key file
+   - Save it as `service-account-key.json` in the root directory
+   - Grant necessary permissions (Storage Admin)
+
+5. Configure MongoDB Atlas:
+   - Whitelist your IP address
+   - Create a database user
+   - Update connection string in `.env.local`
+
+## 🎯 Running the Application
+
+### Development Mode
+```bash
+npm run dev
+```
+Open [http://localhost:3000](http://localhost:3000) in your browser.
+
+### Production Build
+```bash
+npm run build
+npm start
+```
+
+## 📁 Project Structure
 
 ```
 BatchBook/
-├── components/           # Reusable React components
-│   ├── Header.tsx       # Navigation header
-│   ├── SearchBar.tsx    # Search input component
-│   └── PhotoCard.tsx    # Content card component
-├── pages/               # Next.js pages
-│   ├── _app.tsx         # App wrapper
-│   ├── index.tsx        # Landing page
-│   └── results.tsx      # Search results page
-├── public/              # Static assets
-│   └── images/          # Image assets
-├── styles/              # Global styles
-│   └── globals.css      # TailwindCSS imports
-├── utils/               # Utility functions
-│   ├── helpers.ts       # General helper functions
-│   └── mockData.ts      # Mock data for development
-├── package.json         # Dependencies and scripts
-├── tailwind.config.js   # TailwindCSS configuration
-├── tsconfig.json        # TypeScript configuration
-└── next.config.js       # Next.js configuration
+├── components/          # Reusable UI components
+│   ├── Header.tsx
+│   ├── SearchBar.tsx
+│   └── PhotoCard.tsx
+├── lib/                 # Utility functions
+│   ├── db.ts           # MongoDB connection
+│   ├── dbConnect.ts    # Database helper
+│   └── storage.ts      # Google Cloud Storage
+├── middleware/          # Custom middleware
+│   └── multer.ts       # File upload handling
+├── models/             # Mongoose schemas
+│   ├── User.ts
+│   ├── Photo.ts
+│   ├── Memory.ts
+│   ├── Comment.ts
+│   └── Institution.ts
+├── pages/              # Next.js pages
+│   ├── api/           # API routes
+│   │   ├── auth/      # Authentication
+│   │   ├── photos/    # Photo endpoints
+│   │   ├── memories/  # Memory CRUD
+│   │   └── upload.ts  # File upload
+│   ├── index.tsx      # Home page with search
+│   ├── feed.tsx       # Memory feed
+│   ├── upload.tsx     # Upload page
+│   └── about.tsx      # About page
+├── public/            # Static assets
+├── styles/            # Global styles
+└── types/             # TypeScript types
 ```
 
-## Getting Started
+## 🔧 Configuration
 
-### Prerequisites
+### MongoDB Connection
+If you encounter SSL/TLS errors, add this to your connection string:
+```
+?retryWrites=true&w=majority&tlsAllowInvalidCertificates=true
+```
 
-- Node.js 18+ installed
-- npm or yarn package manager
+### Image Domains
+Google Cloud Storage is configured in `next.config.js`:
+```javascript
+images: {
+  domains: ['storage.googleapis.com']
+}
+```
 
-### Installation
+## 🌐 API Endpoints
 
-1. **Clone or download the project**
-   ```bash
-   # If you have the project files, navigate to the directory
-   cd BatchBook
-   ```
+- `GET /api/photos` - Fetch all photos (with optional search filters)
+- `POST /api/upload` - Upload a new memory with photo
+- `GET /api/memories` - Get all memories
+- `POST /api/memories/create` - Create a new memory
+- `POST /api/memories/[id]/like` - Like a memory
+- `POST /api/memories/[id]/comments` - Add a comment
 
-2. **Install dependencies**
-   ```bash
-   npm install
-   # or
-   yarn install
-   ```
+## 🎨 Features in Detail
 
-3. **Run the development server**
-   ```bash
-   npm run dev
-   # or
-   yarn dev
-   ```
+### Search Functionality
+Users can search for memories by:
+- School name (case-insensitive)
+- Graduation year
+- Combined filters
 
-4. **Open your browser**
-   Navigate to [http://localhost:3000](http://localhost:3000) to see the application.
+Results are displayed on the home page with smooth animations.
 
-### Available Scripts
+### Upload System
+- Supports JPEG, PNG, and WebP images
+- Max file size: 10MB
+- Automatic signed URL generation for secure access
+- Metadata collection: name, school, year, title, description
 
-- `npm run dev` - Start development server
-- `npm run build` - Build for production
-- `npm run start` - Start production server
-- `npm run lint` - Run ESLint
+### Memory Feed
+- Interactive card-based layout
+- Like and comment functionality
+- Social sharing options (Facebook, Twitter, WhatsApp)
+- Real-time updates
 
-## Deployment to Vercel
+## 🔒 Security
 
-Vercel provides free hosting for Next.js applications with excellent performance and global CDN.
+- Google OAuth authentication
+- Secure file uploads with validation
+- MongoDB with proper connection encryption
+- Environment variables for sensitive data
+- Service account key for GCS (not committed to repo)
 
-### Method 1: Deploy via Vercel CLI (Recommended)
+## 🐛 Known Issues
 
-1. **Install Vercel CLI**
-   ```bash
-   npm i -g vercel
-   ```
+See `ISSUES_AND_FIXES.md` for common issues and solutions.
 
-2. **Login to Vercel**
-   ```bash
-   vercel login
-   ```
+## 🤝 Contributing
 
-3. **Deploy from your project directory**
-   ```bash
-   vercel
-   ```
-   
-   Follow the prompts:
-   - Link to existing project? `N`
-   - Project name: `batchbook` (or your preferred name)
-   - Directory: `./` (current directory)
-   - Override settings? `N`
+Contributions are welcome! Please feel free to submit a Pull Request.
 
-4. **Your app will be deployed!**
-   Vercel will provide you with a URL like `https://batchbook.vercel.app`
+## 📝 License
 
-### Method 2: Deploy via GitHub Integration
+This project is open source and available under the MIT License.
 
-1. **Push your code to GitHub**
-   ```bash
-   git init
-   git add .
-   git commit -m "Initial commit"
-   git remote add origin https://github.com/yourusername/batchbook.git
-   git push -u origin main
-   ```
+## 👨‍💻 Author
 
-2. **Connect to Vercel**
-   - Go to [vercel.com](https://vercel.com)
-   - Sign up/login with GitHub
-   - Click "New Project"
-   - Import your GitHub repository
-   - Configure project settings (usually auto-detected)
-   - Click "Deploy"
+Tarunjit Biswas
+- GitHub: [@Tarunjit45](https://github.com/Tarunjit45)
 
-3. **Automatic deployments**
-   - Every push to main branch will trigger a new deployment
-   - Pull requests get preview deployments automatically
+## 🙏 Acknowledgments
 
-### Environment Variables (if needed)
+- Next.js team for the amazing framework
+- Vercel for hosting solutions
+- MongoDB Atlas for database services
+- Google Cloud Platform for storage and authentication
 
-If you need environment variables:
+---
 
-1. **Create `.env.local` file**
-   ```bash
-   # Add your environment variables
-   NEXT_PUBLIC_API_URL=https://api.example.com
-   ```
-
-2. **Add to Vercel**
-   - Go to your project dashboard
-   - Settings → Environment Variables
-   - Add your variables
-
-## Customization
-
-### Styling
-- Modify `tailwind.config.js` for theme customization
-- Update `styles/globals.css` for global styles
-- Use Tailwind utility classes throughout components
-
-### Components
-- All components are in the `components/` directory
-- Follow the existing patterns for consistency
-- Use TypeScript interfaces for props
-
-### Content
-- Update `utils/mockData.ts` to change sample data
-- Replace placeholder images in `public/images/`
-- Modify page content in `pages/` directory
-
-## Performance Tips
-
-- Images are automatically optimized by Next.js Image component
-- Use dynamic imports for code splitting
-- Implement proper loading states
-- Optimize bundle size with proper imports
-
-## Contributing
-
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Test thoroughly
-5. Submit a pull request
-
-## License
-
-This project is open source and available under the [MIT License](LICENSE).
-
-## Support
-
-If you have any questions or need help, please open an issue in the repository.
+Made with ❤️ for preserving school memories
