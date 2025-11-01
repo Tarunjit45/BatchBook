@@ -3,7 +3,8 @@ import type { NextApiRequest } from 'next';
 import dbConnect from '@/lib/dbConnect';
 import Photo from '@/models/Photo';
 import { createHandler, getUploadedFiles } from '@/middleware/multer';
-import { getSession } from 'next-auth/react';
+import { getServerSession } from 'next-auth/next';
+import { authOptions } from './auth/[...nextauth]';
 import { uploadFile } from '@/lib/storage';
 
 // Define request type with file support
@@ -39,10 +40,10 @@ async function handler(req: NextApiRequestWithUser, res: NextApiResponse) {
   }
 
   try {
-    // Check authentication (optional for testing)
+    // Check authentication
     console.log('Checking session...');
-    const session = await getSession({ req });
-    console.log('Session:', session ? 'Authenticated' : 'Not authenticated');
+    const session = await getServerSession(req, res, authOptions);
+    console.log('Session:', session ? `Authenticated as ${session.user?.email}` : 'Not authenticated');
     
     // Commented out for testing - uncomment in production
     // if (!session) {

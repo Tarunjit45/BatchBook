@@ -119,8 +119,8 @@ export default function Feed() {
               id: '1',
               imageUrl: '/images/placeholder-image.jpg',
               schoolName: 'Example High School',
-              uploaderName: 'John Doe',
-              uploaderEmail: session?.user?.email || 'test@example.com', // Use current user's email for testing
+              uploaderName: session?.user?.name || 'John Doe',
+              uploaderEmail: session?.user?.email || 'tarunjitbiswas24@gmail.com', // Use current user's email for testing
               uploadDate: '2023-05-15',
               year: 2020,
               title: 'Graduation Day',
@@ -181,7 +181,7 @@ export default function Feed() {
     };
 
     fetchMemories();
-  }, []);
+  }, [session]); // Re-fetch when session changes
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
