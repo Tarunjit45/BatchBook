@@ -145,13 +145,13 @@ export default function Home() {
         <div className="text-center max-w-5xl mx-auto">
           {/* Main Title */}
           <motion.div 
-            className="mb-16"
+            className="mb-12 md:mb-16"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
           >
             <motion.h1 
-              className="text-6xl md:text-7xl font-nostalgic font-bold text-primary-800 mb-6"
+              className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-nostalgic font-bold text-primary-800 mb-4 md:mb-6"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.2 }}
@@ -160,7 +160,7 @@ export default function Home() {
             </motion.h1>
             
             <motion.p 
-              className="text-2xl md:text-3xl text-primary-600 font-medium mb-6"
+              className="text-xl sm:text-2xl md:text-3xl text-primary-600 font-medium mb-4 md:mb-6 px-4"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.3 }}
@@ -169,7 +169,7 @@ export default function Home() {
             </motion.p>
             
             <motion.p 
-              className="text-lg text-gray-600 max-w-2xl mx-auto leading-relaxed"
+              className="text-base md:text-lg text-gray-600 max-w-2xl mx-auto leading-relaxed px-4"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.4 }}
@@ -182,12 +182,12 @@ export default function Home() {
           {/* Search Section */}
           <motion.div 
             id="search-section" 
-            className="max-w-4xl mx-auto mb-24"
+            className="max-w-4xl mx-auto mb-16 md:mb-24"
             initial={{ opacity: 0, y: 40 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.5 }}
           >
-            <div className="bg-white/90 backdrop-blur-sm rounded-2xl shadow-xl border-2 border-primary-100 p-6 transition-all duration-300 hover:shadow-2xl">
+            <div className="bg-white/90 backdrop-blur-sm rounded-2xl shadow-xl border-2 border-primary-100 p-4 md:p-6 transition-all duration-300 hover:shadow-2xl">
               <form onSubmit={handleSearchSubmit} className="space-y-4">
                 <div className="flex flex-col md:flex-row gap-4">
                   <div className="flex-1">

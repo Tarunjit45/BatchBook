@@ -288,12 +288,12 @@ export default function Upload() {
           className="max-w-3xl mx-auto bg-white rounded-2xl shadow-xl overflow-hidden"
           variants={itemVariants}
         >
-          <div className="bg-gradient-to-r from-primary-600 to-primary-800 p-6 text-white">
-            <h1 className="text-2xl md:text-3xl font-bold">Share Your School Memories</h1>
-            <p className="text-primary-100 mt-1">Upload photos, yearbooks, or documents to preserve them forever</p>
+          <div className="bg-gradient-to-r from-primary-600 to-primary-800 p-6 md:p-8 text-white">
+            <h1 className="text-xl sm:text-2xl md:text-3xl font-bold">Share Your School Memories</h1>
+            <p className="text-sm md:text-base text-primary-100 mt-1">Upload photos, yearbooks, or documents to preserve them forever</p>
           </div>
           
-          <form onSubmit={handleSubmit} className="p-6 md:p-8">
+          <form onSubmit={handleSubmit} className="p-4 sm:p-6 md:p-8">
             <div className="space-y-6">
               <div className="space-y-4">
                 <h3 className="text-lg font-medium text-gray-900">Your Information</h3>

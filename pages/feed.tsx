@@ -430,17 +430,17 @@ export default function Feed() {
     <div className="min-h-screen bg-gray-50">
       <Header />
       
-      <main className="container mx-auto px-4 py-8">
+      <main className="container mx-auto px-3 sm:px-4 py-6 md:py-8">
         <div className="max-w-4xl mx-auto">
           <button
             onClick={() => router.back()}
-            className="flex items-center text-primary-600 hover:text-primary-800 mb-6 transition-colors"
+            className="flex items-center text-primary-600 hover:text-primary-800 mb-4 md:mb-6 transition-colors text-sm md:text-base"
           >
             <FiArrowLeft className="mr-2" />
             Back to Home
           </button>
 
-          <h1 className="text-3xl font-bold text-gray-900 mb-8">Memory Feed</h1>
+          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-6 md:mb-8">Memory Feed</h1>
           
           {loading ? (
             <div className="flex justify-center items-center h-64">
@@ -459,25 +459,25 @@ export default function Feed() {
               <p className="text-gray-500">Be the first to share your school memories!</p>
             </div>
           ) : (
-            <div className="space-y-8">
+            <div className="space-y-6 md:space-y-8">
               {memories.map((memory) => (
                 <motion.div 
                   key={memory.id}
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.3, type: 'spring', stiffness: 300, damping: 20 }}
-                  className="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1"
+                  className="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-all duration-300"
                 >
                   {/* Memory Header */}
-                  <div className="p-4 border-b border-gray-100 flex justify-between items-center">
+                  <div className="p-3 sm:p-4 border-b border-gray-100 flex justify-between items-center">
                     <div className="flex items-center">
-                      <div className="w-10 h-10 bg-gradient-to-br from-primary-100 to-primary-200 rounded-full flex items-center justify-center mr-3">
-                        <span className="text-primary-600 font-medium text-sm">
+                      <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-br from-primary-100 to-primary-200 rounded-full flex items-center justify-center mr-2 sm:mr-3">
+                        <span className="text-primary-600 font-medium text-xs sm:text-sm">
                           {memory.uploaderName.split(' ').map(n => n[0]).join('').toUpperCase()}
                         </span>
                       </div>
                       <div>
-                        <p className="font-medium text-gray-900">{memory.uploaderName}</p>
+                        <p className="font-medium text-gray-900 text-sm sm:text-base">{memory.uploaderName}</p>
                         <p className="text-xs text-gray-500">{formatDate(memory.uploadDate)}</p>
                       </div>
                     </div>
@@ -558,8 +558,8 @@ export default function Feed() {
                   </div>
                   
                   {/* Memory Content */}
-                  <div className="md:flex">
-                    <div className="md:flex-shrink-0 md:w-64 h-48 bg-gray-100 relative group overflow-hidden">
+                  <div className="flex flex-col md:flex-row">
+                    <div className="w-full md:flex-shrink-0 md:w-64 h-48 sm:h-56 md:h-48 bg-gray-100 relative group overflow-hidden">
                       <motion.img 
                         className="w-full h-full object-cover"
                         src={memory.imageUrl} 
@@ -570,14 +570,14 @@ export default function Feed() {
                       />
                       <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-10 transition-all duration-300 flex items-center justify-center">
                             <motion.span 
-                              className="text-white text-lg font-medium opacity-0 group-hover:opacity-100 transform translate-y-2 group-hover:translate-y-0 transition-all duration-300"
+                              className="text-white text-sm md:text-lg font-medium opacity-0 group-hover:opacity-100 transform translate-y-2 group-hover:translate-y-0 transition-all duration-300"
                             >
                               View Full Image
                             </motion.span>
                           </div>
                     </div>
-                    <div className="p-6 flex-1">
-                      <div className="flex items-center text-sm text-gray-500 mb-2">
+                    <div className="p-4 sm:p-6 flex-1">
+                      <div className="flex items-center text-xs sm:text-sm text-gray-500 mb-2">
                         <FiMapPin className="mr-1 flex-shrink-0" />
                         <span className="truncate">{memory.schoolName} • {memory.year} Batch</span>
                       </div>
@@ -620,8 +620,8 @@ export default function Feed() {
                         </div>
                       ) : (
                         <>
-                          <h2 className="text-xl font-semibold text-gray-900 mb-2">{memory.title}</h2>
-                          <p className="text-gray-600 mb-4">{memory.description}</p>
+                          <h2 className="text-lg sm:text-xl font-semibold text-gray-900 mb-2">{memory.title}</h2>
+                          <p className="text-sm sm:text-base text-gray-600 mb-4">{memory.description}</p>
                         </>
                       )}
                       
@@ -644,29 +644,32 @@ export default function Feed() {
                       <div className="flex border-t border-b border-gray-100 py-2">
                         <button 
                           onClick={() => toggleLike(memory.id)}
-                          className={`flex-1 flex items-center justify-center py-2 rounded-lg transition-colors ${memory.isLiked ? 'text-red-500' : 'text-gray-500 hover:text-red-500'}`}
+                          className={`flex-1 flex items-center justify-center py-2 rounded-lg transition-colors text-sm sm:text-base ${
+                            memory.isLiked ? 'text-red-500' : 'text-gray-500 hover:text-red-500'
+                          }`}
                         >
                           <motion.span
                             animate={{ scale: memory.isLiked ? [1, 1.2, 1] : 1 }}
                             transition={{ duration: 0.3 }}
+                            className="flex items-center"
                           >
-                            {memory.isLiked ? <FaHeart className="mr-2" /> : <FiHeart className="mr-2" />}
+                            {memory.isLiked ? <FaHeart className="mr-1 sm:mr-2" /> : <FiHeart className="mr-1 sm:mr-2" />}
                           </motion.span>
-                          Like
+                          <span className="hidden sm:inline">Like</span>
                         </button>
                         <button 
                           onClick={() => toggleComments(memory.id)}
-                          className="flex-1 flex items-center justify-center py-2 text-gray-500 hover:text-primary-600 rounded-lg transition-colors"
+                          className="flex-1 flex items-center justify-center py-2 text-gray-500 hover:text-primary-600 rounded-lg transition-colors text-sm sm:text-base"
                         >
-                          <FiMessageSquare className="mr-2" />
-                          Comment
+                          <FiMessageSquare className="mr-1 sm:mr-2" />
+                          <span className="hidden sm:inline">Comment</span>
                         </button>
                         <button 
                           onClick={(e) => toggleShareOptions(e, memory.id)}
-                          className="flex-1 flex items-center justify-center py-2 text-gray-500 hover:text-primary-600 rounded-lg transition-colors relative"
+                          className="flex-1 flex items-center justify-center py-2 text-gray-500 hover:text-primary-600 rounded-lg transition-colors relative text-sm sm:text-base"
                         >
-                          <FiShare2 className="mr-2" />
-                          Share
+                          <FiShare2 className="mr-1 sm:mr-2" />
+                          <span className="hidden sm:inline">Share</span>
                         </button>
                       </div>
                       
