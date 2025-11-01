@@ -534,7 +534,7 @@ export default function Feed() {
                                 onChange={(e) => handleCommentChange(e, memory.id)}
                                 placeholder="Write a comment..."
                                 className="flex-1 px-4 py-2 border border-gray-200 rounded-full focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent text-sm"
-                                ref={el => commentInputRefs.current[memory.id] = el}
+                                ref={el => { commentInputRefs.current[memory.id] = el; }}
                               />
                               <button 
                                 type="submit"
@@ -581,7 +581,7 @@ export default function Feed() {
                                 onChange={(e) => handleCommentChange(e, memory.id)}
                                 placeholder="Write a comment..."
                                 className="flex-1 px-4 py-2 border border-gray-200 rounded-full focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent text-sm"
-                                ref={el => commentInputRefs.current[memory.id] = el}
+                                ref={el => { commentInputRefs.current[memory.id] = el; }}
                               />
                               <button 
                                 type="submit"
