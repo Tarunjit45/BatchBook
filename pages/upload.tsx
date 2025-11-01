@@ -3,6 +3,7 @@ import Head from 'next/head';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FiUpload, FiCheck, FiX, FiLoader } from 'react-icons/fi';
 import Header from '@/components/Header';
+import Footer from '@/components/Footer';
 
 type FormData = {
   fullName: string;
@@ -415,6 +416,7 @@ export default function Upload() {
           </AnimatePresence>
         </motion.div>
       </motion.main>
+      <Footer />
     </div>
   );
 }

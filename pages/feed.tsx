@@ -17,6 +17,7 @@ import {
 import { FaHeart } from 'react-icons/fa';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import Header from '../components/Header';
+import Footer from '../components/Footer';
 
 interface Comment {
   id: string;
@@ -602,6 +603,7 @@ export default function Feed() {
           )}
         </div>
       </main>
+      <Footer />
     </div>
   );
 }

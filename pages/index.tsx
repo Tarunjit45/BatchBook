@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { FiSearch, FiUpload, FiBookOpen, FiUsers, FiAward, FiArrowRight } from 'react-icons/fi';
 import Header from '@/components/Header';
 import SearchBar from '@/components/SearchBar';
+import Footer from '@/components/Footer';
 import Image from 'next/image';
 
 // Animation variants
@@ -426,6 +427,7 @@ export default function Home() {
             </motion.div>
           </div>
         </motion.main>
+        <Footer />
       </div>
   )
 }
