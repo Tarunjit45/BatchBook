@@ -32,7 +32,7 @@ export default async function handler(
       updateResult = await db.collection(collections.memories).updateOne(
         { _id: new ObjectId(memoryId) },
         { 
-          $pull: { likes: { userId } },
+          $pull: { likes: { userId } } as any,
           $set: { updatedAt: new Date() }
         }
       );
@@ -46,7 +46,7 @@ export default async function handler(
               userId,
               createdAt: new Date()
             } 
-          },
+          } as any,
           $set: { updatedAt: new Date() }
         }
       );

@@ -74,7 +74,7 @@ export default async function handler(
               text: newComment.text,
               createdAt: newComment.createdAt
             }
-          },
+          } as any,
           $set: { updatedAt: new Date() }
         }
       );
