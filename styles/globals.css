@@ -24,7 +24,7 @@
   }
 
   * {
-    @apply border-border;
+    @apply border-primary-200;
   }
 
   /* Custom scrollbar */
@@ -97,7 +97,7 @@
   
   /* Yearbook Card */
   .yearbook-card {
-    @apply bg-gradient-to-br from-white/95 via-primary-50/40 to-secondary-50/40 rounded-3xl shadow-soft border border-primary-100/60 overflow-hidden hover:shadow-nostalgic transition-all duration-500 transform hover:-translate-y-2 hover:scale-[1.03] group;
+    @apply bg-gradient-to-br from-white/95 via-primary-50/40 to-secondary-50/40 rounded-3xl shadow-soft border border-primary-100/60 overflow-hidden hover:shadow-nostalgic transition-all duration-500 transform hover:-translate-y-2 hover:scale-[1.03];
   }
 
   /* Text Components */

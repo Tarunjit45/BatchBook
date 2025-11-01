@@ -1,6 +1,26 @@
 # BatchBook
 
-A modern web application built with Next.js and TailwindCSS for discovering, organizing, and sharing amazing content.
+> Your school memories, preserved forever. 📚✨
+
+A modern web application built with Next.js and TailwindCSS for discovering, organizing, and sharing school memories.
+
+## ⚠️ Current Status
+
+✅ **Working**: Development server running, UI fully functional  
+⚠️ **Issue**: MongoDB connection has SSL/TLS compatibility issue  
+🔧 **Solution**: See `ISSUES_AND_FIXES.md` for detailed fixes
+
+## 🚀 Quick Start
+
+```bash
+# Install dependencies (already done)
+npm install
+
+# Run development server (currently running)
+npm run dev
+```
+
+Open [http://localhost:3000](http://localhost:3000) in your browser.
 
 ## Features
 
