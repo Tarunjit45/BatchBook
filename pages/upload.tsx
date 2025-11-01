@@ -1,7 +1,9 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import Head from 'next/head';
+import { useSession, signIn } from 'next-auth/react';
+import { useRouter } from 'next/router';
 import { motion, AnimatePresence } from 'framer-motion';
-import { FiUpload, FiCheck, FiX, FiLoader } from 'react-icons/fi';
+import { FiUpload, FiCheck, FiX, FiLoader, FiLock } from 'react-icons/fi';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 
@@ -47,6 +49,8 @@ const dropZoneVariants = {
 };
 
 export default function Upload() {
+  const { data: session, status: sessionStatus } = useSession();
+  const router = useRouter();
   const [file, setFile] = useState<File | null>(null);
   const [isUploading, setIsUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
@@ -107,6 +111,13 @@ export default function Upload() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!file) return;
+
+    // Check if user is authenticated
+    if (!session) {
+      alert('Please sign in to upload memories');
+      signIn('google');
+      return;
+    }
 
     // Validate required fields
     if (!formData.fullName || !formData.schoolName || !formData.graduationYear) {
@@ -193,6 +204,80 @@ export default function Upload() {
 
       <Header />
 
+      {/* Loading state */}
+      {sessionStatus === 'loading' && (
+        <div className="container mx-auto px-4 py-12">
+          <div className="max-w-3xl mx-auto bg-white rounded-2xl shadow-xl p-12 text-center">
+            <FiLoader className="animate-spin w-12 h-12 text-primary-600 mx-auto mb-4" />
+            <p className="text-gray-600">Loading...</p>
+          </div>
+        </div>
+      )}
+
+      {/* Not authenticated - Show sign-in prompt */}
+      {sessionStatus === 'unauthenticated' && (
+        <motion.div 
+          className="container mx-auto px-4 py-12"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+        >
+          <div className="max-w-3xl mx-auto bg-white rounded-2xl shadow-xl overflow-hidden">
+            <div className="bg-gradient-to-r from-primary-600 to-primary-800 p-8 text-center text-white">
+              <div className="w-20 h-20 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                <FiLock className="w-10 h-10" />
+              </div>
+              <h1 className="text-3xl font-bold mb-2">Sign In Required</h1>
+              <p className="text-primary-100">You need to sign in to upload memories</p>
+            </div>
+            <div className="p-8 md:p-12 text-center">
+              <p className="text-gray-600 mb-8 text-lg">
+                Create an account or sign in to start sharing your school memories with BatchBook.
+              </p>
+              <div className="space-y-4">
+                <button
+                  onClick={() => signIn('google')}
+                  className="w-full max-w-sm mx-auto flex items-center justify-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 transition-colors"
+                >
+                  <svg className="w-5 h-5 mr-2" viewBox="0 0 24 24">
+                    <path fill="currentColor" d="M12.545,10.239v3.821h5.445c-0.712,2.315-2.647,3.972-5.445,3.972c-3.332,0-6.033-2.701-6.033-6.032 s2.701-6.032,6.033-6.032c1.498,0,2.866,0.549,3.921,1.453l2.814-2.814C17.503,2.988,15.139,2,12.545,2 C7.021,2,2.543,6.477,2.543,12s4.478,10,10.002,10c8.396,0,10.249-7.85,9.426-11.748L12.545,10.239z"/>
+                  </svg>
+                  Sign in with Google
+                </button>
+                <p className="text-sm text-gray-500 mt-4">
+                  By signing in, you agree to our{' '}
+                  <a href="/terms" className="text-primary-600 hover:underline">Terms</a> and{' '}
+                  <a href="/privacy" className="text-primary-600 hover:underline">Privacy Policy</a>
+                </p>
+              </div>
+              <div className="mt-8 pt-8 border-t border-gray-200">
+                <h3 className="text-lg font-semibold text-gray-900 mb-4">Why sign in?</h3>
+                <ul className="text-left space-y-2 max-w-md mx-auto text-gray-600">
+                  <li className="flex items-start">
+                    <FiCheck className="w-5 h-5 text-green-600 mr-2 mt-0.5 flex-shrink-0" />
+                    <span>Upload and share your school memories</span>
+                  </li>
+                  <li className="flex items-start">
+                    <FiCheck className="w-5 h-5 text-green-600 mr-2 mt-0.5 flex-shrink-0" />
+                    <span>Connect with former classmates</span>
+                  </li>
+                  <li className="flex items-start">
+                    <FiCheck className="w-5 h-5 text-green-600 mr-2 mt-0.5 flex-shrink-0" />
+                    <span>Like and comment on memories</span>
+                  </li>
+                  <li className="flex items-start">
+                    <FiCheck className="w-5 h-5 text-green-600 mr-2 mt-0.5 flex-shrink-0" />
+                    <span>Keep your memories safe forever</span>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </motion.div>
+      )}
+
+      {/* Authenticated - Show upload form */}
+      {sessionStatus === 'authenticated' && session && (
       <motion.main 
         className="container mx-auto px-4 py-12"
         initial="hidden"
@@ -416,6 +501,7 @@ export default function Upload() {
           </AnimatePresence>
         </motion.div>
       </motion.main>
+      )}
       <Footer />
     </div>
   );
