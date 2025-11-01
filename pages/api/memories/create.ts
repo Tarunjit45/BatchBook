@@ -143,7 +143,7 @@ handler.post(async (req: CreateMemoryRequest, res: NextApiResponse) => {
     return res.status(500).json({ 
       success: false,
       message: 'Internal server error',
-      error: process.env.NODE_ENV === 'development' ? error.message : undefined
+      error: process.env.NODE_ENV === 'development' ? (error instanceof Error ? error.message : 'Unknown error') : undefined
     });
   }
 });
