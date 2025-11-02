@@ -3,6 +3,7 @@ import { getServerSession } from 'next-auth/next';
 import { connectToDatabase } from '../../../lib/db';
 import { ObjectId } from 'mongodb';
 import { authOptions } from '../auth/[...nextauth]';
+import { isAdmin } from '../../../utils/admin';
 
 export default async function handler(
   req: NextApiRequest,
@@ -151,14 +152,18 @@ async function handleDelete(
   res: NextApiResponse
 ) {
   try {
-    // First, check if the photo exists and belongs to the user
+    // First, check if the photo exists
     const photo = await collection.findOne({ _id: new ObjectId(id) });
 
     if (!photo) {
       return res.status(404).json({ success: false, message: 'Photo not found' });
     }
 
-    if (photo.uploadedBy !== userEmail) {
+    // Check if user is admin or the owner of the photo
+    const userIsAdmin = isAdmin(userEmail);
+    const isOwner = photo.uploadedBy === userEmail;
+
+    if (!userIsAdmin && !isOwner) {
       return res.status(403).json({ success: false, message: 'You can only delete your own photos' });
     }
 
@@ -174,7 +179,7 @@ async function handleDelete(
 
     return res.status(200).json({
       success: true,
-      message: 'Photo deleted successfully'
+      message: userIsAdmin ? 'Photo deleted by admin' : 'Photo deleted successfully'
     });
   } catch (error) {
     console.error('Error deleting photo:', error);

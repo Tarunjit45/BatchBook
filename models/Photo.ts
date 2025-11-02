@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import { ADMIN_EMAILS, isAdmin } from '../utils/admin';
 
 const photoSchema = new mongoose.Schema({
   url: {
@@ -67,5 +68,8 @@ const photoSchema = new mongoose.Schema({
 
 // Index for faster search queries
 photoSchema.index({ school_name: 'text', city: 'text', state: 'text', year: 1 });
+
+// Export admin utilities for server-side use
+export { ADMIN_EMAILS, isAdmin };
 
 export default mongoose.models.Photo || mongoose.model('Photo', photoSchema);

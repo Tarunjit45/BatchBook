@@ -15,12 +15,14 @@ import {
   FiSend,
   FiMoreHorizontal,
   FiEdit2,
-  FiTrash2
+  FiTrash2,
+  FiShield
 } from 'react-icons/fi';
 import { FaHeart } from 'react-icons/fa';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
+import { isAdmin } from '../utils/admin';
 
 interface Comment {
   id: string;
@@ -389,13 +391,15 @@ export default function Feed() {
   };
 
   const canEditMemory = (memory: Memory) => {
-    const canEdit = session?.user?.email === memory.uploaderEmail;
-    console.log('Can edit check:', {
-      sessionEmail: session?.user?.email,
-      uploaderEmail: memory.uploaderEmail,
-      canEdit
-    });
-    return canEdit;
+    const userIsAdmin = isAdmin(session?.user?.email);
+    const isOwner = session?.user?.email === memory.uploaderEmail;
+    return isOwner || userIsAdmin;
+  };
+
+  const canDeleteMemory = (memory: Memory) => {
+    const userIsAdmin = isAdmin(session?.user?.email);
+    const isOwner = session?.user?.email === memory.uploaderEmail;
+    return isOwner || userIsAdmin;
   };
 
   const shareOnSocialMedia = (platform: string) => {
@@ -511,12 +515,27 @@ export default function Feed() {
                                     <FiEdit2 className="mr-2" />
                                     Edit Memory
                                   </button>
+                                  <div className="border-t border-gray-200 my-2"></div>
+                                </>
+                              )}
+                              
+                              {/* Delete option with admin indicator */}
+                              {canDeleteMemory(memory) && (
+                                <>
                                   <button 
                                     onClick={() => deleteMemory(memory.id)}
-                                    className="w-full flex items-center px-4 py-2 text-sm text-red-600 hover:bg-red-50 rounded-md transition-colors"
+                                    className="w-full flex items-center justify-between px-4 py-2 text-sm text-red-600 hover:bg-red-50 rounded-md transition-colors"
                                   >
-                                    <FiTrash2 className="mr-2" />
-                                    Delete Memory
+                                    <span className="flex items-center">
+                                      <FiTrash2 className="mr-2" />
+                                      Delete Memory
+                                    </span>
+                                    {isAdmin(session?.user?.email) && session?.user?.email !== memory.uploaderEmail && (
+                                      <span className="flex items-center text-xs bg-yellow-100 text-yellow-800 px-2 py-0.5 rounded">
+                                        <FiShield className="mr-1" />
+                                        Admin
+                                      </span>
+                                    )}
                                   </button>
                                   <div className="border-t border-gray-200 my-2"></div>
                                 </>
