@@ -14,7 +14,7 @@ export default async function handler(
     await dbConnect();
     
     // Get search parameters
-    const { school, year } = req.query;
+    const { school, year, feed } = req.query;
     
     // Build search filter
     const filter: any = {};
@@ -23,6 +23,12 @@ export default async function handler(
     }
     if (year) {
       filter['metadata.graduationYear'] = parseInt(year as string);
+    }
+    
+    // If this is for the feed (no search params), only show public photos
+    // If searching by school/year, show all photos regardless of privacy
+    if (!school && !year && feed === 'true') {
+      filter.isPublic = true;
     }
     
     // Get photos with optional filtering

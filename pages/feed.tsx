@@ -84,7 +84,7 @@ export default function Feed() {
     // Fetch memories from API
     const fetchMemories = async () => {
       try {
-        const response = await fetch('/api/photos');
+        const response = await fetch('/api/photos?feed=true');
         const data = await response.json();
         
         if (data.success && data.photos.length > 0) {

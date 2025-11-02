@@ -21,6 +21,10 @@ const photoSchema = new mongoose.Schema({
     type: String,
     required: [true, 'Uploader email is required'],
   },
+  isPublic: {
+    type: Boolean,
+    default: true,
+  },
   metadata: {
     fullName: {
       type: String,

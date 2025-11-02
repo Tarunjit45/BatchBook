@@ -13,6 +13,7 @@ type FormData = {
   graduationYear: number;
   memoryTitle: string;
   description: string;
+  isPublic: boolean;
 };
 
 // Animation variants
@@ -57,6 +58,7 @@ export default function Upload() {
   const [status, setStatus] = useState<null | 'success' | 'error'>(null);
   const [dragActive, setDragActive] = useState(false);
   const [preview, setPreview] = useState<string | null>(null);
+  const [showPublicWarning, setShowPublicWarning] = useState(false);
 
   // Form fields
   const [formData, setFormData] = useState<FormData>({
@@ -64,7 +66,8 @@ export default function Upload() {
     schoolName: '',
     graduationYear: new Date().getFullYear(),
     memoryTitle: '',
-    description: ''
+    description: '',
+    isPublic: false
   });
 
   const currentYear = new Date().getFullYear();
@@ -76,6 +79,26 @@ export default function Upload() {
       ...prev,
       [name]: name === 'graduationYear' ? parseInt(value) : value
     }));
+  };
+
+  const handlePublicToggle = (checked: boolean) => {
+    if (checked) {
+      // Show warning when enabling public
+      setShowPublicWarning(true);
+    } else {
+      // Directly set to private without warning
+      setFormData(prev => ({ ...prev, isPublic: false }));
+    }
+  };
+
+  const confirmPublic = () => {
+    setFormData(prev => ({ ...prev, isPublic: true }));
+    setShowPublicWarning(false);
+  };
+
+  const cancelPublic = () => {
+    setFormData(prev => ({ ...prev, isPublic: false }));
+    setShowPublicWarning(false);
   };
 
   // Handle file selection
@@ -136,6 +159,7 @@ export default function Upload() {
     uploadData.append('graduationYear', formData.graduationYear.toString());
     uploadData.append('memoryTitle', formData.memoryTitle);
     uploadData.append('description', formData.description);
+    uploadData.append('isPublic', formData.isPublic.toString());
 
     try {
       // Simulate upload progress
@@ -176,7 +200,8 @@ export default function Upload() {
           schoolName: '',
           graduationYear: new Date().getFullYear(),
           memoryTitle: '',
-          description: ''
+          description: '',
+          isPublic: false
         });
       }, 2000);
       
@@ -373,6 +398,44 @@ export default function Upload() {
                     placeholder="Tell us more about this memory..."
                   />
                 </div>
+
+                {/* Public/Private Toggle */}
+                <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
+                  <div className="flex items-start justify-between">
+                    <div className="flex-1">
+                      <label htmlFor="isPublic" className="flex items-center cursor-pointer">
+                        <div className="relative">
+                          <input
+                            type="checkbox"
+                            id="isPublic"
+                            checked={formData.isPublic}
+                            onChange={(e) => handlePublicToggle(e.target.checked)}
+                            className="sr-only"
+                          />
+                          <div className={`block w-14 h-8 rounded-full transition-colors ${
+                            formData.isPublic ? 'bg-primary-600' : 'bg-gray-300'
+                          }`}></div>
+                          <div className={`dot absolute left-1 top-1 bg-white w-6 h-6 rounded-full transition-transform ${
+                            formData.isPublic ? 'transform translate-x-6' : ''
+                          }`}></div>
+                        </div>
+                        <div className="ml-3">
+                          <span className="text-sm font-medium text-gray-900">
+                            {formData.isPublic ? 'Public Memory' : 'Private Memory'}
+                          </span>
+                          <p className="text-xs text-gray-500 mt-0.5">
+                            {formData.isPublic 
+                              ? 'This memory will appear in the Memory Feed for all users'
+                              : 'This memory will only be searchable by school name and year'}
+                          </p>
+                        </div>
+                      </label>
+                    </div>
+                  </div>
+                  <div className="mt-2 text-xs text-gray-600 bg-blue-50 p-2 rounded border border-blue-200">
+                    💡 <strong>Note:</strong> Regardless of this setting, all memories are searchable when users filter by school name and graduation year.
+                  </div>
+                </div>
               </div>
 
               <div className="space-y-4">
@@ -502,6 +565,59 @@ export default function Upload() {
         </motion.div>
       </motion.main>
       )}
+
+      {/* Public Warning Modal */}
+      <AnimatePresence>
+        {showPublicWarning && (
+          <motion.div
+            className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={cancelPublic}
+          >
+            <motion.div
+              className="bg-white rounded-2xl shadow-2xl max-w-md w-full p-6 sm:p-8"
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.9, opacity: 0 }}
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="text-center">
+                <div className="mx-auto w-16 h-16 bg-yellow-100 rounded-full flex items-center justify-center mb-4">
+                  <svg className="w-8 h-8 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                  </svg>
+                </div>
+                <h3 className="text-xl font-bold text-gray-900 mb-2">Make Memory Public?</h3>
+                <p className="text-gray-600 mb-6">
+                  By enabling public, your memory will be visible to <strong>all users</strong> on the Memory Feed. Everyone on this platform will be able to see, like, and comment on this post.
+                </p>
+                <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 mb-6">
+                  <p className="text-sm text-blue-800">
+                    🔍 <strong>Search Visibility:</strong> Your memory will still appear in search results when users filter by your school name and graduation year, regardless of this setting.
+                  </p>
+                </div>
+                <div className="flex flex-col sm:flex-row gap-3">
+                  <button
+                    onClick={cancelPublic}
+                    className="flex-1 px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50 font-medium transition-colors"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    onClick={confirmPublic}
+                    className="flex-1 px-4 py-2 bg-primary-600 text-white rounded-md hover:bg-primary-700 font-medium transition-colors"
+                  >
+                    Yes, Make Public
+                  </button>
+                </div>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       <Footer />
     </div>
   );

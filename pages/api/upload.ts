@@ -71,6 +71,7 @@ async function handler(req: NextApiRequestWithUser, res: NextApiResponse) {
       mimeType: uploadedFile.mimetype,
       size: uploadedFile.size,
       uploadedBy: session?.user?.email || 'anonymous',
+      isPublic: req.body.isPublic === 'true',
       metadata: {
         fullName: req.body.fullName || 'Anonymous',
         schoolName: req.body.schoolName || 'Unknown School',
