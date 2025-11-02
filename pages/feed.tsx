@@ -86,11 +86,16 @@ export default function Feed() {
     // Fetch memories from API
     const fetchMemories = async () => {
       try {
+        console.log('Fetching memories from API...');
         const response = await fetch('/api/photos?feed=true');
         const data = await response.json();
         
-        if (data.success && data.photos.length > 0) {
+        console.log('API Response:', data);
+        console.log('Photos length:', data.photos?.length);
+        
+        if (data.success && data.photos && data.photos.length > 0) {
           // Transform API data to component format
+          console.log('Using real data from database');
           const transformedMemories: Memory[] = data.photos.map((photo: any) => ({
             id: photo.id,
             imageUrl: photo.imageUrl,
@@ -115,70 +120,15 @@ export default function Feed() {
           setMemories(transformedMemories);
           setLoading(false);
         } else {
-          // Use mock data if no real data available
-          const mockMemories: Memory[] = [
-            {
-              id: '1',
-              imageUrl: '/images/placeholder-image.jpg',
-              schoolName: 'Example High School',
-              uploaderName: session?.user?.name || 'John Doe',
-              uploaderEmail: session?.user?.email || 'tarunjitbiswas24@gmail.com', // Use current user's email for testing
-              uploadDate: '2023-05-15',
-              year: 2020,
-              title: 'Graduation Day',
-              description: 'Our final day at school. So many memories!',
-              likes: 24,
-              isLiked: false,
-              comments: [
-                {
-                  id: 'c1',
-                  user: 'Jane Smith',
-                  text: 'This brings back so many memories!',
-                  timestamp: '2023-05-16T10:30:00Z'
-                },
-                {
-                  id: 'c2',
-                  user: 'Mike Johnson',
-                  text: 'Best class ever!',
-                  timestamp: '2023-05-16T11:45:00Z'
-                }
-              ],
-              showComments: false,
-              showCommentInput: false,
-              newComment: '',
-              showShareOptions: false,
-              showEditMenu: false,
-              isEditing: false
-            },
-            {
-              id: '2',
-              imageUrl: '/images/placeholder-image.jpg',
-              schoolName: 'Central College',
-              uploaderName: 'Sarah Williams',
-              uploaderEmail: 'sarah@example.com', // Different user
-              uploadDate: '2023-06-10',
-              year: 2021,
-              title: 'Annual Sports Day',
-              description: 'Won first place in the relay race!',
-              likes: 15,
-              isLiked: true,
-              comments: [],
-              showComments: false,
-              showCommentInput: false,
-              newComment: '',
-              showShareOptions: false,
-              showEditMenu: false,
-              isEditing: false
-            }
-          ];
-          
-          setMemories(mockMemories);
+          // No data available - show empty state instead of mock data
+          console.log('No photos found in database, showing empty state');
+          setMemories([]);
           setLoading(false);
         }
       } catch (err) {
+        console.error('Error fetching memories:', err);
         setError('Failed to load memories. Please try again later.');
         setLoading(false);
-        console.error('Error fetching memories:', err);
       }
     };
 
