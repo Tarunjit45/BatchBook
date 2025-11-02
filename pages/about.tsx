@@ -25,7 +25,7 @@ export default function About() {
 
             <h2 className="text-2xl font-semibold text-primary-700 mt-8 mb-4">Our Story</h2>
             <p className="text-gray-700 mb-6">
-              Founded in 2023, BatchBook was created to solve the problem of lost or damaged physical yearbooks and photos. 
+              Founded in 2025, BatchBook was created to solve the problem of lost or damaged physical yearbooks and photos. 
               We believe that these precious memories should be preserved and easily accessible to everyone who was part of those special moments.
             </p>
 
