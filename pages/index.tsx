@@ -94,6 +94,8 @@ export default function Home() {
     const school = formData.get('school') as string;
     const year = formData.get('year') as string;
     
+    console.log('🔎 Search submitted:', { school, year });
+    
     setIsSearching(true);
     setHasSearched(true);
     
@@ -102,16 +104,23 @@ export default function Home() {
       if (school) params.append('school', school);
       if (year) params.append('year', year);
       
-      const response = await fetch(`/api/photos?${params.toString()}`);
+      const url = `/api/photos?${params.toString()}`;
+      console.log('🌐 Fetching:', url);
+      
+      const response = await fetch(url);
       const data = await response.json();
       
+      console.log('📊 API Response:', data);
+      
       if (data.success) {
+        console.log(`✅ Found ${data.photos.length} results`);
         setSearchResults(data.photos);
       } else {
+        console.log('❌ Search failed:', data.message);
         setSearchResults([]);
       }
     } catch (error) {
-      console.error('Search error:', error);
+      console.error('❌ Search error:', error);
       setSearchResults([]);
     } finally {
       setIsSearching(false);
@@ -199,7 +208,6 @@ export default function Home() {
                       name="school"
                       placeholder="Enter school name..."
                       className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200"
-                      required
                     />
                   </div>
                   <div className="w-full md:w-48">

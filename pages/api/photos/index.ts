@@ -16,6 +16,8 @@ export default async function handler(
     // Get search parameters
     const { school, year, feed } = req.query;
     
+    console.log('📸 Photos API called with params:', { school, year, feed });
+    
     // Build search filter
     const filter: any = {};
     if (school) {
@@ -31,11 +33,15 @@ export default async function handler(
       filter.isPublic = true;
     }
     
+    console.log('🔍 Search filter:', filter);
+    
     // Get photos with optional filtering
     const photos = await Photo.find(filter)
       .sort({ uploadDate: -1 })
       .limit(50)
       .lean();
+    
+    console.log(`✅ Found ${photos.length} photos in database`);
 
     // Transform to feed format
     const feedItems = photos.map((photo: any) => ({
