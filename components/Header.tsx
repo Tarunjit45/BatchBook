@@ -99,6 +99,40 @@ export default function Header() {
             >
               Memory Feed
             </Link>
+            <Link 
+              href="/register-institute" 
+              className={`text-sm font-medium transition-colors px-3 py-2 rounded-lg ${
+                router.pathname === '/register-institute' 
+                  ? 'text-primary-600 bg-primary-50' 
+                  : 'text-gray-600 hover:text-primary-600 hover:bg-primary-50'
+              }`}
+            >
+              Register Institute
+            </Link>
+            <Link 
+              href="/register-staff" 
+              className={`text-sm font-medium transition-colors px-3 py-2 rounded-lg ${
+                router.pathname === '/register-staff' 
+                  ? 'text-primary-600 bg-primary-50' 
+                  : 'text-gray-600 hover:text-primary-600 hover:bg-primary-50'
+              }`}
+            >
+              Register Staff
+            </Link>
+            
+            {/* Admin Panel Link - Only visible to admin */}
+            {session?.user?.email === 'tarunjitbiswas24@gmail.com' && (
+              <Link 
+                href="/admin" 
+                className={`text-sm font-medium transition-colors px-3 py-2 rounded-lg ${
+                  router.pathname === '/admin' 
+                    ? 'text-primary-600 bg-primary-50' 
+                    : 'text-gray-600 hover:text-primary-600 hover:bg-primary-50'
+                }`}
+              >
+                Admin Panel
+              </Link>
+            )}
           </nav>
 
           {/* Desktop User Actions */}
@@ -199,6 +233,43 @@ export default function Header() {
               >
                 Memory Feed
               </Link>
+              <Link 
+                href="/register-institute" 
+                onClick={closeMobileMenu}
+                className={`text-base font-medium transition-colors px-4 py-3 rounded-lg ${
+                  router.pathname === '/register-institute' 
+                    ? 'text-primary-600 bg-primary-50' 
+                    : 'text-gray-600 hover:text-primary-600 hover:bg-primary-50'
+                }`}
+              >
+                Register Institute
+              </Link>
+              <Link 
+                href="/register-staff" 
+                onClick={closeMobileMenu}
+                className={`text-base font-medium transition-colors px-4 py-3 rounded-lg ${
+                  router.pathname === '/register-staff' 
+                    ? 'text-primary-600 bg-primary-50' 
+                    : 'text-gray-600 hover:text-primary-600 hover:bg-primary-50'
+                }`}
+              >
+                Register Staff
+              </Link>
+              
+              {/* Mobile Admin Panel Link - Only visible to admin */}
+              {session?.user?.email === 'tarunjitbiswas24@gmail.com' && (
+                <Link 
+                  href="/admin" 
+                  onClick={closeMobileMenu}
+                  className={`text-base font-medium transition-colors px-4 py-3 rounded-lg ${
+                    router.pathname === '/admin' 
+                      ? 'text-primary-600 bg-primary-50' 
+                      : 'text-gray-600 hover:text-primary-600 hover:bg-primary-50'
+                  }`}
+                >
+                  Admin Panel
+                </Link>
+              )}
               
               {/* Mobile User Actions */}
               <div className="pt-4 border-t border-gray-100 space-y-2">

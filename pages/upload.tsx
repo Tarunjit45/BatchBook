@@ -3,7 +3,7 @@ import Head from 'next/head';
 import { useSession, signIn } from 'next-auth/react';
 import { useRouter } from 'next/router';
 import { motion, AnimatePresence } from 'framer-motion';
-import { FiUpload, FiCheck, FiX, FiLoader, FiLock } from 'react-icons/fi';
+import { FiUpload, FiCheck, FiX, FiLoader, FiLock, FiAlertTriangle } from 'react-icons/fi';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 
@@ -59,6 +59,8 @@ export default function Upload() {
   const [dragActive, setDragActive] = useState(false);
   const [preview, setPreview] = useState<string | null>(null);
   const [showPublicWarning, setShowPublicWarning] = useState(false);
+  const [staffStatus, setStaffStatus] = useState<null | { isStaff: boolean; isVerified: boolean }>(null);
+  const [loadingStaffStatus, setLoadingStaffStatus] = useState(true);
 
   // Form fields
   const [formData, setFormData] = useState<FormData>({
@@ -69,6 +71,33 @@ export default function Upload() {
     description: '',
     isPublic: false
   });
+
+  // Check staff status on mount
+  useEffect(() => {
+    const checkStaffStatus = async () => {
+      try {
+        const response = await fetch('/api/staff/status');
+        const data = await response.json();
+        
+        if (data.success) {
+          setStaffStatus({
+            isStaff: data.isStaff,
+            isVerified: data.isVerified
+          });
+        }
+      } catch (error) {
+        console.error('Error checking staff status:', error);
+      } finally {
+        setLoadingStaffStatus(false);
+      }
+    };
+
+    if (sessionStatus === 'authenticated') {
+      checkStaffStatus();
+    } else {
+      setLoadingStaffStatus(false);
+    }
+  }, [sessionStatus]);
 
   const currentYear = new Date().getFullYear();
   const years = Array.from({ length: 50 }, (_, i) => currentYear - i);
@@ -230,7 +259,7 @@ export default function Upload() {
       <Header />
 
       {/* Loading state */}
-      {sessionStatus === 'loading' && (
+      {(sessionStatus === 'loading' || loadingStaffStatus) && (
         <div className="container mx-auto px-4 py-12">
           <div className="max-w-3xl mx-auto bg-white rounded-2xl shadow-xl p-12 text-center">
             <FiLoader className="animate-spin w-12 h-12 text-primary-600 mx-auto mb-4" />
@@ -301,8 +330,63 @@ export default function Upload() {
         </motion.div>
       )}
 
-      {/* Authenticated - Show upload form */}
-      {sessionStatus === 'authenticated' && session && (
+      {/* Authenticated but not staff or not verified - Show access restriction */}
+      {sessionStatus === 'authenticated' && session && (!staffStatus?.isStaff || !staffStatus?.isVerified) && (
+        <div className="container mx-auto px-4 py-12">
+          <div className="max-w-3xl mx-auto bg-white rounded-2xl shadow-xl overflow-hidden">
+            <div className="bg-gradient-to-r from-yellow-500 to-yellow-600 p-8 text-center text-white">
+              <div className="w-20 h-20 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                <FiAlertTriangle className="w-10 h-10" />
+              </div>
+              <h1 className="text-3xl font-bold mb-2">Staff Access Required</h1>
+              <p className="text-yellow-100">Only verified institute staff can upload memories</p>
+            </div>
+            <div className="p-8 md:p-12 text-center">
+              {!staffStatus?.isStaff ? (
+                <>
+                  <p className="text-gray-600 mb-8 text-lg">
+                    You are not registered as staff. Please register first to upload memories.
+                  </p>
+                  <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                    <button
+                      onClick={() => router.push('/register-staff')}
+                      className="px-6 py-3 bg-primary-600 text-white rounded-md hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 transition-colors font-medium"
+                    >
+                      Register as Staff
+                    </button>
+                    <button
+                      onClick={() => router.push('/')}
+                      className="px-6 py-3 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 transition-colors font-medium"
+                    >
+                      Back to Home
+                    </button>
+                  </div>
+                </>
+              ) : (
+                <>
+                  <p className="text-gray-600 mb-8 text-lg">
+                    Your staff account is pending verification. You will receive an email once approved.
+                  </p>
+                  <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6 max-w-2xl mx-auto">
+                    <p className="text-blue-800 text-sm">
+                      Only verified staff members can upload memories to ensure platform security and authenticity.
+                    </p>
+                  </div>
+                  <button
+                    onClick={() => router.push('/')}
+                    className="px-6 py-3 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 transition-colors font-medium"
+                  >
+                    Back to Home
+                  </button>
+                </>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Authenticated, staff, and verified - Show upload form */}
+      {sessionStatus === 'authenticated' && session && staffStatus?.isStaff && staffStatus?.isVerified && (
       <motion.main 
         className="container mx-auto px-4 py-12"
         initial="hidden"
@@ -565,7 +649,7 @@ export default function Upload() {
         </motion.div>
       </motion.main>
       )}
-
+      
       {/* Public Warning Modal */}
       <AnimatePresence>
         {showPublicWarning && (
