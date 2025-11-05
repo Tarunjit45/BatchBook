@@ -166,8 +166,7 @@ export default function Upload() {
 
     // Check if user is authenticated
     if (!session) {
-      alert('Please sign in to upload memories');
-      signIn('google');
+      router.push('/auth/signin');
       return;
     }
 
@@ -290,7 +289,7 @@ export default function Upload() {
               </p>
               <div className="space-y-4">
                 <button
-                  onClick={() => signIn('google')}
+                  onClick={() => router.push('/auth/signin')}
                   className="w-full max-w-sm mx-auto flex items-center justify-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 transition-colors"
                 >
                   <svg className="w-5 h-5 mr-2" viewBox="0 0 24 24">
@@ -303,27 +302,6 @@ export default function Upload() {
                   <a href="/terms" className="text-primary-600 hover:underline">Terms</a> and{' '}
                   <a href="/privacy" className="text-primary-600 hover:underline">Privacy Policy</a>
                 </p>
-              </div>
-              <div className="mt-8 pt-8 border-t border-gray-200">
-                <h3 className="text-lg font-semibold text-gray-900 mb-4">Why sign in?</h3>
-                <ul className="text-left space-y-2 max-w-md mx-auto text-gray-600">
-                  <li className="flex items-start">
-                    <FiCheck className="w-5 h-5 text-green-600 mr-2 mt-0.5 flex-shrink-0" />
-                    <span>Upload and share your school memories</span>
-                  </li>
-                  <li className="flex items-start">
-                    <FiCheck className="w-5 h-5 text-green-600 mr-2 mt-0.5 flex-shrink-0" />
-                    <span>Connect with former classmates</span>
-                  </li>
-                  <li className="flex items-start">
-                    <FiCheck className="w-5 h-5 text-green-600 mr-2 mt-0.5 flex-shrink-0" />
-                    <span>Like and comment on memories</span>
-                  </li>
-                  <li className="flex items-start">
-                    <FiCheck className="w-5 h-5 text-green-600 mr-2 mt-0.5 flex-shrink-0" />
-                    <span>Keep your memories safe forever</span>
-                  </li>
-                </ul>
               </div>
             </div>
           </div>

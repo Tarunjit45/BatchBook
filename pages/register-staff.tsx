@@ -33,7 +33,12 @@ export default function RegisterStaff() {
   // Redirect if not authenticated
   useEffect(() => {
     if (status === 'unauthenticated') {
-      router.push('/auth/signin');
+      // Store the intended destination in localStorage
+      if (typeof window !== 'undefined') {
+        localStorage.setItem('intendedDestination', '/register-staff');
+      }
+      // Redirect to sign in with callback URL
+      router.push(`/auth/signin?callbackUrl=/register-staff`);
     } else if (status === 'authenticated' && session?.user) {
       setFormData(prev => ({
         ...prev,

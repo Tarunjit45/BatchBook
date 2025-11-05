@@ -2,7 +2,7 @@ import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { signIn, useSession, signOut } from 'next-auth/react'
 import { useState, useEffect } from 'react'
-import { FiMenu, FiX } from 'react-icons/fi'
+import { FiMenu, FiX, FiUser } from 'react-icons/fi'
 
 export default function Header() {
   const router = useRouter()
@@ -19,6 +19,10 @@ export default function Header() {
   };
 
   const handleSignOut = () => {
+    // Clear institute info from localStorage if it exists
+    if (typeof window !== 'undefined') {
+      localStorage.removeItem('instituteInfo');
+    }
     signOut({ callbackUrl: '/' });
   };
 
@@ -37,8 +41,7 @@ export default function Header() {
 
   const handleUploadClick = (e: React.MouseEvent) => {
     e.preventDefault();
-    setIsMobileMenuOpen(false);
-    router.push('/upload');
+    router.push('/auth/signin');
   };
 
   const closeMobileMenu = () => {
@@ -99,26 +102,7 @@ export default function Header() {
             >
               Memory Feed
             </Link>
-            <Link 
-              href="/register-institute" 
-              className={`text-sm font-medium transition-colors px-3 py-2 rounded-lg ${
-                router.pathname === '/register-institute' 
-                  ? 'text-primary-600 bg-primary-50' 
-                  : 'text-gray-600 hover:text-primary-600 hover:bg-primary-50'
-              }`}
-            >
-              Register Institute
-            </Link>
-            <Link 
-              href="/register-staff" 
-              className={`text-sm font-medium transition-colors px-3 py-2 rounded-lg ${
-                router.pathname === '/register-staff' 
-                  ? 'text-primary-600 bg-primary-50' 
-                  : 'text-gray-600 hover:text-primary-600 hover:bg-primary-50'
-              }`}
-            >
-              Register Staff
-            </Link>
+
             
             {/* Admin Panel Link - Only visible to admin */}
             {session?.user?.email === 'tarunjitbiswas24@gmail.com' && (
@@ -133,22 +117,37 @@ export default function Header() {
                 Admin Panel
               </Link>
             )}
+                          
+
           </nav>
 
           {/* Desktop User Actions */}
           <div className="hidden md:flex items-center space-x-4">
             {session ? (
               <div className="flex items-center space-x-4">
-                {session.user?.image && (
-                  <img 
-                    src={session.user.image} 
-                    alt={session.user.name || 'User'}
-                    className="w-8 h-8 rounded-full"
-                  />
+                {/* Institute Authority Profile Button */}
+                {session.user?.email && session.user.email.endsWith('.edu.in') ? (
+                  <button 
+                    onClick={() => router.push('/institute/dashboard')}
+                    className="flex items-center text-sm font-medium text-primary-600 hover:text-primary-700 transition-colors px-3 py-2 rounded-lg hover:bg-primary-50"
+                  >
+                    <FiMenu className="w-4 h-4 mr-2" />
+                    Institute Dashboard
+                  </button>
+                ) : (
+                  <>
+                    {session.user?.image && (
+                      <img 
+                        src={session.user.image} 
+                        alt={session.user.name || 'User'}
+                        className="w-8 h-8 rounded-full"
+                      />
+                    )}
+                    <span className="text-sm text-gray-700">
+                      {session.user?.name || 'User'}
+                    </span>
+                  </>
                 )}
-                <span className="text-sm text-gray-700">
-                  {session.user?.name || 'User'}
-                </span>
                 <button 
                   onClick={handleSignOut}
                   className="text-sm font-medium text-primary-600 hover:text-primary-700 transition-colors px-3 py-2 rounded-lg hover:bg-primary-50"
@@ -158,7 +157,7 @@ export default function Header() {
               </div>
             ) : (
               <button 
-                onClick={handleSignIn}
+                onClick={() => router.push('/auth/signin')}
                 className="flex items-center text-sm font-medium text-primary-600 hover:text-primary-700 transition-colors px-3 py-2 rounded-lg hover:bg-primary-50"
               >
                 <svg className="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 24 24">
@@ -167,12 +166,7 @@ export default function Header() {
                 Sign In
               </button>
             )}
-            <button 
-              onClick={handleUploadClick}
-              className="btn-primary text-sm"
-            >
-              Upload
-            </button>
+
           </div>
 
           {/* Mobile Menu Button */}
@@ -209,7 +203,7 @@ export default function Header() {
                     : 'text-gray-600 hover:text-primary-600 hover:bg-primary-50'
                 }`}
               >
-                Upload Memories
+                Upload
               </Link>
               <Link 
                 href="/about" 
@@ -233,28 +227,7 @@ export default function Header() {
               >
                 Memory Feed
               </Link>
-              <Link 
-                href="/register-institute" 
-                onClick={closeMobileMenu}
-                className={`text-base font-medium transition-colors px-4 py-3 rounded-lg ${
-                  router.pathname === '/register-institute' 
-                    ? 'text-primary-600 bg-primary-50' 
-                    : 'text-gray-600 hover:text-primary-600 hover:bg-primary-50'
-                }`}
-              >
-                Register Institute
-              </Link>
-              <Link 
-                href="/register-staff" 
-                onClick={closeMobileMenu}
-                className={`text-base font-medium transition-colors px-4 py-3 rounded-lg ${
-                  router.pathname === '/register-staff' 
-                    ? 'text-primary-600 bg-primary-50' 
-                    : 'text-gray-600 hover:text-primary-600 hover:bg-primary-50'
-                }`}
-              >
-                Register Staff
-              </Link>
+
               
               {/* Mobile Admin Panel Link - Only visible to admin */}
               {session?.user?.email === 'tarunjitbiswas24@gmail.com' && (
@@ -270,25 +243,43 @@ export default function Header() {
                   Admin Panel
                 </Link>
               )}
-              
+
               {/* Mobile User Actions */}
               <div className="pt-4 border-t border-gray-100 space-y-2">
                 {session ? (
                   <>
-                    <div className="flex items-center space-x-3 px-4 py-2">
-                      {session.user?.image && (
-                        <img 
-                          src={session.user.image} 
-                          alt={session.user.name || 'User'}
-                          className="w-10 h-10 rounded-full"
-                        />
-                      )}
-                      <span className="text-sm font-medium text-gray-700">
-                        {session.user?.name || 'User'}
-                      </span>
-                    </div>
+                    {/* Institute Authority Profile Button - Mobile */}
+                    {session.user?.email && session.user.email.endsWith('.edu.in') ? (
+                      <button 
+                        onClick={() => {
+                          router.push('/institute/dashboard');
+                          closeMobileMenu();
+                        }}
+                        className="w-full flex items-center text-base font-medium text-primary-600 hover:text-primary-700 transition-colors px-4 py-3 rounded-lg hover:bg-primary-50"
+                      >
+                        <FiMenu className="w-5 h-5 mr-2" />
+                        Institute Dashboard
+                      </button>
+                    ) : (
+                      <div className="flex items-center space-x-3 px-4 py-2">
+                        {session.user?.image && (
+                          <img 
+                            src={session.user.image} 
+                            alt={session.user.name || 'User'}
+                            className="w-10 h-10 rounded-full"
+                          />
+                        )}
+                        <span className="text-sm font-medium text-gray-700">
+                          {session.user?.name || 'User'}
+                        </span>
+                      </div>
+                    )}
                     <button 
                       onClick={() => {
+                        // Clear institute info from localStorage if it exists
+                        if (typeof window !== 'undefined') {
+                          localStorage.removeItem('instituteInfo');
+                        }
                         handleSignOut();
                         closeMobileMenu();
                       }}
@@ -300,7 +291,7 @@ export default function Header() {
                 ) : (
                   <button 
                     onClick={() => {
-                      handleSignIn();
+                      router.push('/auth/signin');
                       closeMobileMenu();
                     }}
                     className="w-full flex items-center text-base font-medium text-primary-600 hover:text-primary-700 transition-colors px-4 py-3 rounded-lg hover:bg-primary-50"
@@ -308,7 +299,7 @@ export default function Header() {
                     <svg className="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 24 24">
                       <path d="M12.545 10.239v3.821h5.445c-.712 2.315-2.647 3.972-5.445 3.972-3.332 0-6.033-2.701-6.033-6.032s2.701-6.032 6.033-6.032c1.498 0 2.866.549 3.921 1.453l2.814-2.814C17.503 2.988 15.139 2 12.545 2 7.021 2 2.543 6.477 2.543 12s4.478 10 10.002 10c8.396 0 10.249-7.85 9.426-11.748l-9.426-.013z"/>
                     </svg>
-                    Sign In with Google
+                    Sign In
                   </button>
                 )}
               </div>
