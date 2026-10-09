@@ -1,72 +1,98 @@
-# 🚀 BatchBook
+# 🎓 BatchBook — Digital Yearbook & Nostalgic Alumni Vault
 
-![Language](https://img.shields.io/badge/Language-TypeScript-blue?style=for-the-badge)
-![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)
-![Status](https://img.shields.io/badge/Production-Active-success?style=for-the-badge)
+[![Next.js](https://img.shields.io/badge/Next.js-14+-000000?style=for-the-badge&logo=next.js&logoColor=white)](https://nextjs.org/)
+[![React](https://img.shields.io/badge/React-18+-61DAFB?style=for-the-badge&logo=react&logoColor=black)](https://react.dev/)
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-3.4+-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)](https://tailwindcss.com/)
+[![MongoDB](https://img.shields.io/badge/MongoDB-Mongoose-47A248?style=for-the-badge&logo=mongodb&logoColor=white)](https://mongodb.com/)
+[![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)](LICENSE)
 
-## 📌 Overview
+**BatchBook** is a modern, responsive full-stack web application crafted to preserve school and college memories. It serves as a digital yearbook and nostalgia vault where students, teachers, and alumni can share photo memories, engage in social comment threads, and reminisce about their school batches.
 
-A nostalgic school memories web app built with Next.js and TailwindCSS
+---
 
-## ✨ Key Features & Architecture
+## ✨ Key Features
 
-- **High-Performance Codebase:** Built using `TypeScript` and modern engineering principles.
-- **Modular & Scalable Design:** Structured directory tree for seamless development and deployment.
-- **Modern Responsive Styling:** Custom UI design system engineered for mobile & desktop clarity.
+* 📸 **Curated Memory Gallery:** High-resolution photo cards showcasing batch events, sports days, cultural festivals, and candid campus moments.
+* 🔍 **Smart Alumni Search:** Instant filtering by student name, roll number, batch year, or memory category via `SearchBar.tsx`.
+* 💬 **Interactive Memory Threads:** Community comment system on individual memories powered by Mongoose schema models.
+* ☁️ **Media Ingestion Pipeline:** File uploads managed through `multer` middleware with integration for Google Cloud Storage.
+* 📱 **Mobile-First Nostalgic UI:** Fluid animations powered by Framer Motion and nostalgic styling styled with Tailwind CSS.
+* 🔐 **Authentication Ready:** Integrated with NextAuth.js and MongoDB adapter for secure student verification.
 
-## 🛠️ Tech Stack & Dependencies
+---
 
-- **Core Language:** `TypeScript`
-- **Libraries & Tools:** React 18, Next.js, Tailwind CSS, TypeScript
-- **Deployment Infrastructure:** Vercel Edge / Cloud Services
+## 🛠️ Tech Stack & Architecture
 
-## 📁 Architecture & File Layout
+* **Frontend:** Next.js (App / Pages router), React 18, Tailwind CSS, Framer Motion, React Icons.
+* **Backend:** Next.js API Routes, Next-Connect, Multer (multipart upload handling).
+* **Database & ORM:** MongoDB, Mongoose (`models/Photo.ts`, `models/Comment.ts`).
+* **Cloud Storage:** Google Cloud Storage (`@google-cloud/storage`).
+* **Auth:** NextAuth.js (`@auth/mongodb-adapter`).
+
+---
+
+## 📁 Project Structure
 
 ```text
 BatchBook/
-├── .github
-├── .github/ISSUE_TEMPLATE
-├── .github/ISSUE_TEMPLATE/bug_report.md
-├── .github/ISSUE_TEMPLATE/feature_request.md
-├── .github/PULL_REQUEST_TEMPLATE.md
-├── .github/workflows
-├── .github/workflows/ci.yml
-├── .gitignore
-├── CODE_OF_CONDUCT.md
-├── CONTRIBUTING.md
-├── ISSUES_AND_FIXES.md
-├── LICENSE
-├── README.md
-├── components
-├── components/Footer.tsx
-└── ... [additional codebase files]
+├── components/            # Reusable UI components
+│   ├── Header.tsx         # Navigation header & brand logo
+│   ├── Footer.tsx         # Site footer
+│   ├── PhotoCard.tsx      # Interactive memory photo card
+│   └── SearchBar.tsx      # Instant alumni/photo search bar
+├── lib/                   # Utility functions & database connection
+│   ├── dbConnect.ts       # Cached MongoDB Mongoose connection
+│   ├── db.ts              # Database helpers
+│   └── storage.ts         # Google Cloud Storage client helpers
+├── middleware/            # Custom API middlewares
+│   └── multer.ts          # Multer memory/disk file upload handler
+├── models/                # Mongoose database schemas
+│   ├── Photo.ts           # Photo memory metadata & tags
+│   └── Comment.ts         # Photo comment thread schema
+├── next.config.js         # Next.js build & image domain configuration
+├── package.json           # Dependencies & scripts
+├── LICENSE                # MIT License
+└── README.md
 ```
 
-## 🚀 Quickstart & Installation
+---
 
-### Prerequisites
-- Node.js (v18.0.0 or higher)
-- npm or yarn package manager
+## 🚀 Getting Started
 
-### Setup Instructions
+### 1. Prerequisites
+Ensure you have **Node.js 18+** and a running **MongoDB** instance (local or MongoDB Atlas).
 
-1. **Clone the repository:**
-   ```bash
-   git clone https://github.com/Tarunjit45/BatchBook.git
-   cd BatchBook
-   ```
+### 2. Installation
+```bash
+git clone https://github.com/Tarunjit45/BatchBook.git
+cd BatchBook
 
-2. **Install dependencies:**
-   ```bash
-   npm install
-   ```
+npm install
+```
 
-3. **Launch development server:**
-   ```bash
-   npm run dev
-   ```
+### 3. Environment Variables
+Create a `.env.local` file in the root directory:
 
-## 📜 Author & License
+```env
+MONGODB_URI=mongodb+srv://<username>:<password>@cluster.mongodb.net/batchbook
+NEXTAUTH_SECRET=your_super_secret_key
+NEXTAUTH_URL=http://localhost:3000
 
-Architected & Developed by **[Tarunjit Biswas](https://github.com/Tarunjit45)**.  
-Distributed under the **MIT License**.
+# Google Cloud Storage (Optional for cloud media hosting)
+GCP_PROJECT_ID=your_project_id
+GCP_CLIENT_EMAIL=your_service_account_email
+GCP_PRIVATE_KEY="your_private_key"
+GCP_BUCKET_NAME=your_storage_bucket
+```
+
+### 4. Run Development Server
+```bash
+npm run dev
+```
+
+Open [http://localhost:3000](http://localhost:3000) in your browser.
+
+---
+
+## 📄 License
+This project is licensed under the [MIT License](LICENSE).
